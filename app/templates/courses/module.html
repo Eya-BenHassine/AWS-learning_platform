@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="module-page">
+    <!-- Module Navigation -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.courses') }}">Courses</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.course_detail', slug=course.slug) }}">{{ course.title }}</a></li>
+                    <li class="breadcrumb-item active">{{ module.title }}</li>
+                </ol>
+            </nav>
+            <h1>{{ module.title }}</h1>
+            <p class="text-muted">Module {{ module.order }} of {{ all_modules|length }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <form method="POST" action="{{ url_for('main.mark_module_complete', module_id=module.id) }}">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-check"></i> Mark as Complete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NEW: MINI TUTORIAL SECTION -->
+    {% if module.mini_tutorial %}
+    <div class="mini-tutorial mb-5">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Quick Tutorial: {{ module.title }}
+                </h4>
+                <small class="opacity-75">A concise overview before diving deep</small>
+            </div>
+            <div class="card-body">
+                <div class="tutorial-content">
+                    {{ module.mini_tutorial|markdown }}
+                </div>
+                
+                <!-- Quick Navigation Links -->
+                <div class="tutorial-links mt-4 pt-3 border-top">
+                    <h6 class="mb-3"><i class="fas fa-rocket me-1"></i> Ready to Dive Deeper?</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#full-content" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-book me-1"></i> Full Detailed Content
+                        </a>
+                        <a href="#cli-commands" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-terminal me-1"></i> AWS CLI Commands
+                        </a>
+                        <a href="#pro-tips" class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-lightbulb me-1"></i> Pro Tips & Best Practices
+                        </a>
+                        <a href="#next-steps" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-arrow-right me-1"></i> Continue Learning
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Module Content -->
+        <div class="col-lg-8">
+            <!-- Full Content Section -->
+            <div class="card module-content mb-4" id="full-content">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-book-open me-2"></i>Detailed Learning Content</h5>
+                </div>
+                <div class="card-body">
+                    <div class="module-content-text">
+                        {{ module.content|safe }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Example Code Block -->
+            <div class="code-block mt-4" id="cli-commands">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-code"></i> AWS CLI Commands & Examples</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre><code class="language-bash">
+# Example AWS CLI command
+aws s3 mb s3://my-cloud-bucket-123
+aws s3 cp file.txt s3://my-cloud-bucket-123/
+aws s3 ls s3://my-cloud-bucket-123/
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tips Section -->
+            <div class="tips mt-4 p-3 bg-info bg-opacity-10 border border-info rounded" id="pro-tips">
+                <h5><i class="fas fa-lightbulb"></i> Pro Tip</h5>
+                <p>Always follow the principle of least privilege when configuring IAM policies. Start with minimal permissions and add more as needed.</p>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between mt-4 pt-3 border-top" id="next-steps">
+                {% set prev_module = none %}
+                {% set next_module = none %}
+                
+                {% for mod in all_modules %}
+                    {% if mod.id == module.id %}
+                        {% if not loop.first %}
+                            {% set prev_module = all_modules[loop.index0 - 1] %}
+                        {% endif %}
+                        {% if not loop.last %}
+                            {% set next_module = all_modules[loop.index0 + 1] %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if prev_module %}
+                <a href="{{ url_for('main.module_detail', course_slug=course.slug, module_id=prev_module.id) }}" 
+                   class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Previous Module
+                </a>
+                {% else %}
+                <div></div>
+                {% endif %}
+                
+                {% if next_module %}
+                <a href="{{ url_for('main.module_detail', course_slug=course.slug, module_id=next_module.id) }}" 
+                   class="btn btn-primary">
+                    Next Module <i class="fas fa-arrow-right"></i>
+                </a>
+                {% else %}
+                <a href="{{ url_for('main.course_detail', slug=course.slug) }}" 
+                   class="btn btn-success">
+                    <i class="fas fa-flag-checkered"></i> Complete Course
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Module Sidebar -->
+        <div class="col-lg-4">
+            <!-- Course Progress -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 20px;">
+                        {% set progress_percentage = (module.order / all_modules|length * 100)|round|int %}
+                        <div class="progress-bar" role="progressbar" 
+                             data-progress="{{ progress_percentage }}">
+                            {{ progress_percentage }}%
+                        </div>
+                    </div>
+                    <p class="text-center mb-0">
+                        Module {{ module.order }} of {{ all_modules|length }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Module List -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Course Modules</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for mod in all_modules %}
+                        <a href="{{ url_for('main.module_detail', course_slug=course.slug, module_id=mod.id) }}" 
+                           class="list-group-item list-group-item-action {% if mod.id == module.id %}active{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <span>Module {{ mod.order }}: {{ mod.title[:30] }}{% if mod.title|length > 30 %}...{% endif %}</span>
+                                {% if mod.order < module.order %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% elif mod.order == module.order %}
+                                <i class="fas fa-play-circle text-primary"></i>
+                                {% else %}
+                                <i class="fas fa-lock text-muted"></i>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resources -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Resources</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-file-pdf text-danger"></i> AWS Whitepaper
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-video text-primary"></i> Video Tutorial
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-link text-success"></i> Official Documentation
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-tasks text-warning"></i> Practice Exercise
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set progress bar width
+    const progressBar = document.querySelector('.progress-bar[data-progress]');
+    if (progressBar) {
+        const progress = progressBar.getAttribute('data-progress');
+        progressBar.style.width = progress + '%';
+    }
+    
+    // Smooth scroll for tutorial links
+    document.querySelectorAll('.tutorial-links a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

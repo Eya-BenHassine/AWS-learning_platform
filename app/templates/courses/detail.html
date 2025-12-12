@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="course-detail">
+    <!-- Course Header -->
+    <div class="course-header card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge bg-{{ 'success' if course.difficulty == 'beginner' else 'warning' if course.difficulty == 'intermediate' else 'danger' }} me-3">
+                            {{ course.difficulty|title }}
+                        </span>
+                        <span class="text-muted">
+                            <i class="fas fa-clock"></i> {{ course.duration_hours }} hours
+                        </span>
+                    </div>
+                    <h1 class="mb-3">{{ course.title }}</h1>
+                    <p class="lead">{{ course.description }}</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    {% if is_enrolled %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> You are enrolled in this course
+                    </div>
+                    <a href="#modules" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play"></i> Continue Learning
+                    </a>
+                    {% else %}
+                    <div class="enroll-box">
+                        <form method="POST" action="{{ url_for('main.enroll_course', slug=course.slug) }}">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-plus"></i> Enroll Now
+                            </button>
+                        </form>
+                        <p class="text-muted mt-2 small">
+                            <i class="fas fa-lock-open"></i> Free access to all course materials
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Course Content -->
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Modules Section -->
+            <div id="modules" class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-list-ol"></i> Course Modules</h3>
+                </div>
+                <div class="card-body p-0">
+                    {% if modules %}
+                    <div class="list-group list-group-flush">
+                        {% for module in modules %}
+                        <div class="list-group-item module-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">
+                                        <span class="badge bg-secondary me-2">Module {{ loop.index }}</span>
+                                        {{ module.title }}
+                                    </h5>
+                                    <p class="mb-0 text-muted">{{ module.content[:100] }}...</p>
+                                </div>
+                                <div>
+                                    {% if is_enrolled %}
+                                    <a href="{{ url_for('main.module_detail', course_slug=course.slug, module_id=module.id) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-play"></i> Start
+                                    </a>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                        <i class="fas fa-lock"></i> Enroll to access
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No modules available yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- What You'll Learn -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3><i class="fas fa-check-circle"></i> What You'll Learn</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="fa-ul">
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> AWS core services and their use cases</li>
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> Hands-on configuration and deployment</li>
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> Security best practices</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="fa-ul">
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> Cost optimization strategies</li>
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> Real-world project implementation</li>
+                                <li><span class="fa-li"><i class="fas fa-check text-success"></i></span> Preparation for AWS certifications</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Course Stats -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Course Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="fas fa-graduation-cap"></i> Level</span>
+                            <span class="badge bg-{{ 'success' if course.difficulty == 'beginner' else 'warning' if course.difficulty == 'intermediate' else 'danger' }}">
+                                {{ course.difficulty|title }}
+                            </span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="fas fa-clock"></i> Duration</span>
+                            <span>{{ course.duration_hours }} hours</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="fas fa-book"></i> Modules</span>
+                            <span>{{ modules|length }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="fas fa-users"></i> Students</span>
+                            <span>{{ course.enrollments|length }} enrolled</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="fas fa-calendar"></i> Updated</span>
+                            <span>{{ course.updated_at.strftime('%b %d, %Y') }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Prerequisites -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Prerequisites</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="fa-ul">
+                        <li><span class="fa-li"><i class="fas fa-laptop"></i></span> Basic computer skills</li>
+                        <li><span class="fa-li"><i class="fas fa-globe"></i></span> Internet connection</li>
+                        <li><span class="fa-li"><i class="fas fa-keyboard"></i></span> Willingness to learn</li>
+                    </ul>
+                    {% if course.difficulty == 'beginner' %}
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i> This is a beginner-friendly course. No prior AWS experience required!
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Share Course -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Share This Course</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="social-share">
+                        <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-primary me-2"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="btn btn-outline-primary"><i class="fas fa-link"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

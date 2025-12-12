@@ -1,0 +1,234 @@
+/* Cloud Animation Enhancements */
+@keyframes cloudFloat {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(-20px) translateX(10px);
+    }
+    50% {
+        transform: translateY(-10px) translateX(20px);
+    }
+    75% {
+        transform: translateY(-30px) translateX(-10px);
+    }
+}
+
+.cloud-1 {
+    animation: cloudFloat 25s infinite ease-in-out;
+}
+
+.cloud-2 {
+    animation: cloudFloat 30s infinite ease-in-out reverse;
+    animation-delay: -5s;
+}
+
+.cloud-3 {
+    animation: cloudFloat 35s infinite ease-in-out;
+    animation-delay: -10s;
+}
+
+.cloud-4 {
+    animation: cloudFloat 40s infinite ease-in-out reverse;
+    animation-delay: -15s;
+}
+
+/* Pulse Animation for Interactive Elements */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Shimmer Effect for Loading */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Floating Elements */
+@keyframes floatUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-element {
+    animation: floatUpDown 3s infinite ease-in-out;
+}
+
+/* Glowing Border */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.glow-border {
+    animation: glow 2s infinite alternate;
+}
+
+/* Spin Animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}
+
+/* Rain Effect (for cloud theme) */
+@keyframes rainDrop {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.3) 100%);
+    animation: rainDrop 1s linear infinite;
+}
+
+/* Lightning Effect */
+@keyframes lightning {
+    0%, 90%, 100% {
+        opacity: 0;
+    }
+    95% {
+        opacity: 1;
+    }
+}
+
+.lightning {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: lightning 4s infinite;
+    pointer-events: none;
+}
+
+/* Wave Animation */
+@keyframes wave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.wave-container {
+    position: absolute;
+    bottom: 0;
+    width: 200%;
+    height: 100px;
+    background: linear-gradient(90deg, 
+        rgba(108, 142, 255, 0.1) 0%, 
+        rgba(108, 142, 255, 0.2) 50%, 
+        rgba(108, 142, 255, 0.1) 100%);
+    animation: wave 10s linear infinite;
+}
+
+/* Particle System */
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: particleFloat 5s linear infinite;
+}

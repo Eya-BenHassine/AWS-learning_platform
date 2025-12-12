@@ -1,0 +1,228 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --cloud-blue: #6c8eff;
+    --light-blue: #a0c4ff;
+    --dark-bg: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.8);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--dark-bg);
+    color: #e2e8f0;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Cloud Background */
+.clouds { /* ... unchanged ... */ }
+.cloud { /* ... unchanged ... */ }
+/* etc. keep your existing cloud, navbar, card, button, hero, course, module, progress, auth, dashboard, footer, code-block, responsive, animations, form, alert styles as before */
+
+/* ===== MINI TUTORIAL STYLES ===== */
+.mini-tutorial .card {
+    border: 3px solid #4a6bff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(74, 107, 255, 0.1);
+    overflow: hidden;
+}
+
+.mini-tutorial .card-header {
+    background: linear-gradient(135deg, #4a6bff 0%, #6b48ff 100%);
+    padding: 1.25rem 1.5rem;
+}
+
+.mini-tutorial .card-header h4 {
+    font-weight: 600;
+}
+
+.mini-tutorial .card-body {
+    padding: 1.75rem;
+}
+
+/* ===== MINI TUTORIAL TEXT VISIBILITY FIX ===== */
+
+/* Main tutorial container */
+.mini-tutorial .card-body {
+    background-color: #ffffff;
+    color: #2d3748; /* Dark gray for best readability */
+}
+
+/* Markdown content styling */
+.tutorial-content {
+    color: #2d3748 !important; /* Force dark color */
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+/* Headers - Make them very visible */
+.tutorial-content h1,
+.tutorial-content h2,
+.tutorial-content h3,
+.tutorial-content h4,
+.tutorial-content h5,
+.tutorial-content h6 {
+    color: #1a202c !important;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: none;
+}
+
+.tutorial-content h1 {
+    font-size: 1.8rem;
+    border-bottom: 3px solid #4a6bff;
+    padding-bottom: 0.5rem;
+}
+
+.tutorial-content h2 {
+    font-size: 1.5rem;
+    border-left: 4px solid #4a6bff;
+    padding-left: 0.75rem;
+    margin-left: -0.75rem;
+}
+
+.tutorial-content h3 {
+    font-size: 1.3rem;
+    color: #4a5568 !important;
+}
+
+/* Paragraphs */
+.tutorial-content p {
+    color: #4a5568 !important;
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
+}
+
+/* Lists */
+.tutorial-content ul,
+.tutorial-content ol {
+    color: #4a5568 !important;
+    padding-left: 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.tutorial-content li {
+    color: #4a5568 !important;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+/* Strong/bold text */
+.tutorial-content strong {
+    color: #2d3748 !important;
+    font-weight: 700;
+}
+
+/* Links */
+.tutorial-content a {
+    color: #4a6bff !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+.tutorial-content a:hover {
+    color: #3a5bef !important;
+    text-decoration: underline;
+}
+
+/* Code blocks */
+.tutorial-content code {
+    background-color: #f7fafc !important;
+    color: #e53e3e !important;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+    border: 1px solid #e2e8f0;
+}
+.tutorial-content pre {
+    background-color: #2d3748 !important;
+    color: #e2e8f0 !important;
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid #4a5568;
+}
+.tutorial-content pre code {
+    background-color: transparent !important;
+    color: inherit !important;
+    border: none;
+    padding: 0;
+}
+
+/* Blockquotes */
+.tutorial-content blockquote {
+    border-left: 4px solid #48bb78;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    background-color: #f0fff4;
+    color: #276749 !important;
+    font-style: italic;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Tables */
+.tutorial-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.tutorial-content table th {
+    background-color: #4a6bff !important;
+    color: white !important;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid #3a5bef;
+}
+.tutorial-content table td {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    color: #4a5568 !important;
+}
+.tutorial-content table tr:nth-child(even) {
+    background-color: #f7fafc;
+}
+
+/* Emoji and icons */
+.tutorial-content h1::before,
+.tutorial-content h2::before,
+.tutorial-content h3::before {
+    margin-right: 0.5rem;
+    opacity: 1;
+}
+
+/* Make sure no inherited styles fade the text */
+.mini-tutorial * {
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+/* Force dark text for all elements */
+.mini-tutorial,
+.mini-tutorial div,
+.mini-tutorial span,
+.mini-tutorial p,
+.mini-tutorial li {
+    color: #4a5568 !important;
+}
+
+/* High contrast for important text */
+.tutorial-content .important,
+.tutorial-content .key-point,
+.tutorial-content .warning {
+    background-color: #fffaf0;
+    border-left: 4px solid #ed8936;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Remove any text fading */
+.mini-tutorial {
+    opacity: 1 !important;
+    filter: none !important;
+}

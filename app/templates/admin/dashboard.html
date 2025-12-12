@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
+            <p class="lead">Manage courses, users, and platform settings.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('main.create_course') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Create New Course
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-5">
+        <div class="col-md-3 col-6">
+            <div class="stat-card card text-center p-3">
+                <h3 class="text-primary">{{ stats.total_courses }}</h3>
+                <p>Total Courses</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card card text-center p-3">
+                <h3 class="text-success">{{ stats.total_users }}</h3>
+                <p>Registered Users</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card card text-center p-3">
+                <h3 class="text-warning">{{ stats.total_enrollments }}</h3>
+                <p>Course Enrollments</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card card text-center p-3">
+                <h3 class="text-info">{{ stats.published_courses }}</h3>
+                <p>Published Courses</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('main.create_course') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-book"></i> Add Course
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-info w-100">
+                                <i class="fas fa-users"></i> Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-warning w-100">
+                                <i class="fas fa-chart-bar"></i> View Analytics
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-secondary w-100">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Courses -->
+    <div class="row mb-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap"></i> Recent Courses</h5>
+                    <a href="{{ url_for('main.courses') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_courses %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Difficulty</th>
+                                    <th>Modules</th>
+                                    <th>Enrollments</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in recent_courses %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('main.course_detail', slug=course.slug) }}" 
+                                           class="text-decoration-none">
+                                            {{ course.title[:30] }}{% if course.title|length > 30 %}...{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if course.difficulty == 'beginner' else 'warning' if course.difficulty == 'intermediate' else 'danger' }}">
+                                            {{ course.difficulty|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ course.modules|length }}</td>
+                                    <td>{{ course.enrollments|length }}</td>
+                                    <td>
+                                        {% if course.is_published %}
+                                        <span class="badge bg-success">Published</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('main.course_detail', slug=course.slug) }}" 
+                                               class="btn btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No courses created yet.</p>
+                        <a href="{{ url_for('main.create_course') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create First Course
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-users"></i> Recent Users</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_users %}
+                    <div class="list-group list-group-flush">
+                        {% for user in recent_users %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">{{ user.username }}</h6>
+                                <small class="text-muted">{{ user.email }}</small>
+                            </div>
+                            <span class="badge bg-{{ 'success' if user.is_admin else 'primary' }}">
+                                {{ 'Admin' if user.is_admin else 'User' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-user fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No users registered yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Stats -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Platform Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-primary">{{ stats.total_courses }}</h4>
+                                <small>Courses</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-success">{{ stats.total_modules }}</h4>
+                                <small>Modules</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-warning">{{ stats.total_users }}</h4>
+                                <small>Users</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-info">{{ stats.total_enrollments }}</h4>
+                                <small>Enrollments</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-danger">{{ stats.completed_modules }}</h4>
+                                <small>Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-secondary">{{ stats.active_users }}</h4>
+                                <small>Active Today</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

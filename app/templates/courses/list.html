@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="courses-page">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1><i class="fas fa-graduation-cap"></i> AWS Courses</h1>
+            <p class="lead">Choose from our curated selection of AWS courses, designed for all skill levels.</p>
+        </div>
+        <div class="col-md-4">
+            {% if current_user.is_admin %}
+            <div class="text-end">
+                <a href="{{ url_for('main.create_course') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Create New Course
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('main.courses') }}" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Search courses..." value="{{ search_query }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="difficulty" class="form-select" onchange="this.form.submit()">
+                        <option value="all" {% if current_difficulty == 'all' %}selected{% endif %}>All Levels</option>
+                        <option value="beginner" {% if current_difficulty == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if current_difficulty == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if current_difficulty == 'advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Courses Grid -->
+    {% if courses.items %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for course in courses.items %}
+        <div class="col">
+            <div class="course-card card h-100">
+                <div class="card-header position-relative">
+                    <div class="difficulty-badge">
+                        <span class="badge bg-{{ 'success' if course.difficulty == 'beginner' else 'warning' if course.difficulty == 'intermediate' else 'danger' }}">
+                            {{ course.difficulty|title }}
+                        </span>
+                    </div>
+                    <div class="course-duration">
+                        <i class="fas fa-clock"></i> {{ course.duration_hours }}h
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text">{{ course.description[:150] }}...</p>
+                    <div class="course-meta">
+                        <small class="text-muted">
+                            <i class="fas fa-book"></i> {{ course.modules|length }} modules
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ url_for('main.course_detail', slug=course.slug) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                    {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('main.enroll_course', slug=course.slug) }}" class="d-inline">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Enroll
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if courses.pages > 1 %}
+    <nav class="mt-4" aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if courses.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.courses', page=courses.prev_num, difficulty=current_difficulty, search=search_query) }}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for page_num in courses.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == courses.page %}
+                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.courses', page=page_num, difficulty=current_difficulty, search=search_query) }}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if courses.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.courses', page=courses.next_num, difficulty=current_difficulty, search=search_query) }}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h4><i class="fas fa-search"></i> No courses found</h4>
+        <p>Try adjusting your search or filter criteria.</p>
+        <a href="{{ url_for('main.courses') }}" class="btn btn-primary">Clear Filters</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
